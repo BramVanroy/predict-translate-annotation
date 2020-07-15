@@ -59,7 +59,7 @@ def main(fin, src_lang="en", tgt_lang="nl", task="translating", recursive=False)
         for pfin in files:
             process_file(pfin, src_lang, tgt_lang, task)
     elif pin.is_file():
-        process_file(pin)
+        process_file(pin, src_lang, tgt_lang, task)
     else:
         raise ValueError(f"Not a valid directory or file: {fin}")
 
