@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <FileName>C:\Users\me\Desktop\experiments\example.project</FileName>
+  <Description>example project description</Description>
+  <versionString />
+  <useSourceText>true</useSourceText>
+  <promptSubjectName>false</promptSubjectName>
+  <useExtendedTranslations>false</useExtendedTranslations>
+  <showTimer>false</showTimer>
+  <maxWindow>false</maxWindow>
+  <offlineGWM>false</offlineGWM>
+  <fullScreen>false</fullScreen>
+  <lockWindows>false</lockWindows>
+  <Plugins>
+    <Key_Logger />
+  </Plugins>
+  <Interface>
+    <Standard>
+      <pluginDependances />
+      <Settings>
+        <TargetBackgroundColor RGB="-1" />
+        <SourceBackgroundColor RGB="-1" />
+        <lineHeight source="1" target="1" />
+        <SourceText></SourceText>
+        <TargetText></TargetText>
+        <SourceTextUTF8></SourceTextUTF8>
+        <TargetTextUTF8></TargetTextUTF8>
+        <TranslationWindow X="0" Y="0" Width="1280" Height="768" Split="640" STO="True" VHO="Vertical" />
+      </Settings>
+      <Import2006Flag>false</Import2006Flag>
+    </Standard>
+  </Interface>
+</Project>
