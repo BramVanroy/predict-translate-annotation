@@ -2,7 +2,7 @@
    also preserving the style that was provided through a RTF file.
    Make sure to back up your data before using this script!"""
 from copy import deepcopy
-from pathlib import  Path
+from pathlib import Path
 import xml.etree.ElementTree as ET
 
 
@@ -29,7 +29,7 @@ def process_file(pfin, pdout, tree_base, style):
     tree_base.write(pfout, encoding="utf-8")
 
 
-def main(fin, dout, fbase, fstyle, extension, recursive=False):
+def main(fin, dout, fbase, fstyle, extension=None, recursive=False):
     """Main entry point to convert a text file, or all files with a given extension in a given directory,
        into a Translog-compatible XML file.
     :param fin: input file or directory
@@ -44,6 +44,8 @@ def main(fin, dout, fbase, fstyle, extension, recursive=False):
     pdout = Path(dout).resolve()
     style = Path(fstyle).read_text(encoding="utf-8")
     tree_base = ET.parse(fbase)
+
+    extension = "" if not extension else extension
 
     if pin.is_dir():
         files = pin.rglob(f"*{extension}") if recursive else pin.glob(f"*{extension}")
@@ -65,7 +67,7 @@ if __name__ == '__main__':
     cparser.add_argument("dout", help="Path to output directory.")
     cparser.add_argument("fbase", help="The XML Translog template to use as a base.")
     cparser.add_argument("fstyle", help="A file containing the RTF instructions regarding style.")
-    cparser.add_argument("-e", "--extension", default=".txt", help="Only files with this extension will be processed.")
+    cparser.add_argument("-e", "--extension", default="", help="Only files with this extension will be processed.")
     cparser.add_argument("-r", "--recursive", action="store_true",
                          help="If 'inp' is a directory, traverse it recursively.")
 
