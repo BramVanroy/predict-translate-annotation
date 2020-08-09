@@ -1,6 +1,6 @@
 """Replaces all occurrences of a given *T*.src file with a pre-existing corresponding T*.src file.
-   E.g. if datap contains P01_T01.src and replp contains T01.src, then the contents of P01_01.src will
-   be replace by those of T01.src. Useful for multiLing, where pre-existing .src files are available.
+   E.g. if datap contains P01_T01.src and replp contains T01.src, then the contents of P01_T01.src will
+   be replaced by those of T01.src. Useful for multiLing, where pre-existing .src files are available.
 
    Make sure to back up your data before using this script!"""
 
