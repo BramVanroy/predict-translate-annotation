@@ -55,18 +55,18 @@ def main(fin, src_lang="en", tgt_lang="nl", task="translating", recursive=False)
     """
     pin = Path(fin).resolve()
 
-    files_processed = 0
+    n_processed = 0
     if pin.is_dir():
         files = pin.rglob("*.xml") if recursive else pin.glob("*.xml")
 
         for pfin in files:
-            files_processed += process_file(pfin, src_lang, tgt_lang, task)
+            n_processed += process_file(pfin, src_lang, tgt_lang, task)
     elif pin.is_file():
-        files_processed += process_file(pin, src_lang, tgt_lang, task)
+        n_processed += process_file(pin, src_lang, tgt_lang, task)
     else:
         raise ValueError(f"Not a valid directory or file: {fin}")
 
-    print(f"Finished processing. Added Languages tag to {files_processed:,} file(s).")
+    print(f"Finished processing. Added Languages tag to {n_processed:,} file(s).")
 
 
 if __name__ == '__main__':
