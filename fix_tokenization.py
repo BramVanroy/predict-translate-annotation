@@ -56,9 +56,7 @@ def verify_cursor(pforig, pfman):
     m_last_cursor = int(m_last_word.get("cur")) + len(m_last_word.text)
 
     if o_last_cursor != m_last_cursor:
-        print(f"Number of characters differs for {pforig.name}: {o_last_cursor} (orig), {m_last_cursor} (edited)."
-              " You should check your file and make sure all needed space-attributes are present and that tokenisation"
-              " is correct. Particularly, check for missing space attributes near \'\"-()[]&{}). ")
+        print(f"Number of characters differs for {pforig.name}: {o_last_cursor} (orig), {m_last_cursor} (edited).")
 
     return o_last_cursor == m_last_cursor
 
@@ -87,10 +85,21 @@ def main(dir_orig, dir_man):
     # Groups identical filenames together, e.g. P01_T01.src of the original and of the manually edited
     dir_groups = group_files(orig_files, man_files)
 
+    n_processed = 0
+    all_valid = True
     for f_orig, f_man in dir_groups:
         process_man_file(f_man)
-        verify_cursor(f_orig, f_man)
+        valid = verify_cursor(f_orig, f_man)
+        if not valid:
+            all_valid = False
+        n_processed += 1
 
+    if not all_valid:
+        print("\nSome of your files have errors in them. You should check the files mentioned above and make sure all"
+              " needed space-attributes are present and that tokenisation is correct. Particularly, check for missing"
+              " space attributes near \'\"-()[]&{}). ")
+
+    print(f"Finished processing {n_processed:,} .src and .tgt file(s).")
 
 if __name__ == '__main__':
     import argparse
