@@ -5,7 +5,7 @@
    Make sure to back up your data before using this script!"""
 
 
-from pathlib import  Path
+from pathlib import Path
 import xml.etree.ElementTree as ET
 
 
@@ -20,7 +20,7 @@ def process_file(pfin, src_lang="en", tgt_lang="nl", task="translating"):
 
     if tree.find(".//Languages") is not None:
         print(f"File {pfin} already has a Languages element. Skipping...")
-        return
+        return False
 
     # ET is quite basic (it's built-in), and is lacking some convenient methods such as
     # getting the parent. Instead, we make a map of child-parents, and find the parent that way
@@ -41,6 +41,8 @@ def process_file(pfin, src_lang="en", tgt_lang="nl", task="translating"):
 
     tree.write(pfin, encoding="utf-8")
 
+    return True
+
 
 def main(fin, src_lang="en", tgt_lang="nl", task="translating", recursive=False):
     """Main entrypoint for the script which decides which course to take depending on 'fin'.
@@ -53,15 +55,18 @@ def main(fin, src_lang="en", tgt_lang="nl", task="translating", recursive=False)
     """
     pin = Path(fin).resolve()
 
+    files_processed = 0
     if pin.is_dir():
         files = pin.rglob("*.xml") if recursive else pin.glob("*.xml")
 
         for pfin in files:
-            process_file(pfin, src_lang, tgt_lang, task)
+            files_processed += process_file(pfin, src_lang, tgt_lang, task)
     elif pin.is_file():
-        process_file(pin, src_lang, tgt_lang, task)
+        files_processed += process_file(pin, src_lang, tgt_lang, task)
     else:
         raise ValueError(f"Not a valid directory or file: {fin}")
+
+    print(f"Finished processing. Added Languages tag to {files_processed:,} file(s).")
 
 
 if __name__ == '__main__':
