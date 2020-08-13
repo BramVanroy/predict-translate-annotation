@@ -94,12 +94,18 @@ class AtagFixer:
 
             valid_src_segs = []
             for src_seg_id, direction_d in sents_d.items():
-                src_orig_tree = direction_d["src"]
+                try:
+                    src_orig_tree = direction_d["src"]
+                except KeyError:
+                    raise KeyError(f"No target segment {src_seg_id} found for {identifier} in the original .src file")
                 src_man_tree = self.sents_man[identifier][src_seg_id]["src"]
 
                 tgt_seg_id = self.sent_aligns[identifier][src_seg_id]
 
-                tgt_orig_tree = self.sents_orig[identifier][tgt_seg_id]["tgt"]
+                try:
+                    tgt_orig_tree = self.sents_orig[identifier][tgt_seg_id]["tgt"]
+                except KeyError:
+                    raise KeyError(f"No target segment {tgt_seg_id} found for {identifier} in the original .tgt file")
                 tgt_man_tree = self.sents_man[identifier][tgt_seg_id]["tgt"]
 
                 if self.elements_equal(src_orig_tree, src_man_tree) and \
