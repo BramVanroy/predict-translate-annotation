@@ -26,12 +26,14 @@ def process_man_file(pfin):
 
     curr_cursor = 0
     curr_id = 1
-    idx_map = defaultdict(list)
     for word in tree.findall(".//W"):
-        idx_map[int(word.get("id"))].append(curr_id)
         space_len = len(word.get("space")) if "space" in word.attrib else 0
         word.set("cur", str(curr_cursor + space_len))
         word.set("id", str(curr_id))
+
+        # sort attributes to make sure that the order is always the same
+        # does not matter if we use a real parser, but you never know...
+        word.attrib = {k: word.attrib[k] for k in sorted(word.attrib)}
 
         curr_cursor += space_len + len(word.text)
         curr_id += 1
