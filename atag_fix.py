@@ -97,7 +97,7 @@ class AtagFixer:
                 try:
                     src_orig_tree = direction_d["src"]
                 except KeyError:
-                    raise KeyError(f"No target segment {src_seg_id} found for {identifier} in the original .src file")
+                    raise KeyError(f"No segment {src_seg_id} found for {identifier} in the original .src file")
                 src_man_tree = self.sents_man[identifier][src_seg_id]["src"]
 
                 tgt_seg_id = self.sent_aligns[identifier][src_seg_id]
@@ -105,7 +105,7 @@ class AtagFixer:
                 try:
                     tgt_orig_tree = self.sents_orig[identifier][tgt_seg_id]["tgt"]
                 except KeyError:
-                    raise KeyError(f"No target segment {tgt_seg_id} found for {identifier} in the original .tgt file")
+                    raise KeyError(f"No segment {tgt_seg_id} found for {identifier} in the original .tgt file")
                 tgt_man_tree = self.sents_man[identifier][tgt_seg_id]["tgt"]
 
                 if self.elements_equal(src_orig_tree, src_man_tree) and \
@@ -210,7 +210,6 @@ class AtagFixer:
                         el.set("in", f"{a_keyfiles['tgt']}{idx_maps['tgt'][prev_out]}")
                     except KeyError:
                         has_error = True
-                        break
 
                     if has_error:
                         print(f"POSSIBLE ERROR: an error occurred for {identifier}. Skipping file...")
