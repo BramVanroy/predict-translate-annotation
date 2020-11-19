@@ -87,6 +87,7 @@ class AtagFixer:
         n_processed = 0
         all_valid = True
         has_error = False
+        segment_not_found = False
         for identifier, sents_d in self.sents_orig.items():
             if identifier not in self.sents_man:
                 print(f"File {identifier} not found in manual correction. Skipping...")
@@ -97,7 +98,11 @@ class AtagFixer:
                 try:
                     src_orig_tree = direction_d["src"]
                 except KeyError:
-                    raise KeyError(f"No segment {src_seg_id} found for {identifier} in the original .src file")
+                    segment_not_found = True
+                    print(f"WARNING 2: No segment {src_seg_id} found for {identifier} in the original .src file."
+                          f" Skipping this segment and its alignment.")
+                    continue
+
                 src_man_tree = self.sents_man[identifier][src_seg_id]["src"]
 
                 tgt_seg_id = self.sent_aligns[identifier][src_seg_id]
@@ -105,14 +110,18 @@ class AtagFixer:
                 try:
                     tgt_orig_tree = self.sents_orig[identifier][tgt_seg_id]["tgt"]
                 except KeyError:
-                    raise KeyError(f"No segment {tgt_seg_id} found for {identifier} in the original .tgt file")
+                    segment_not_found = True
+                    print(f"WARNING 2: No segment {tgt_seg_id} found for {identifier} in the original .tgt file."
+                          f" Skipping this segment and its alignment...")
+                    continue
+
                 tgt_man_tree = self.sents_man[identifier][tgt_seg_id]["tgt"]
 
                 if self.elements_equal(src_orig_tree, src_man_tree) and \
                         self.elements_equal(tgt_orig_tree, tgt_man_tree):
                     valid_src_segs.append(src_seg_id)
                 else:
-                    print(f"WARNING: NOT identical for {identifier}, aligned pair {src_seg_id}-{tgt_seg_id}.")
+                    print(f"WARNING 1: NOT identical for {identifier}, aligned pair {src_seg_id}-{tgt_seg_id}.")
                     all_valid = False
 
             if valid_src_segs:
@@ -129,9 +138,13 @@ class AtagFixer:
                   f" separate directory, and use that directory for this script.")
 
         if not all_valid:
-            print(f"\nAfter uploading files to TPR-DB/YAWAT, the 'warning' sentence pairs above will need to be"
+            print(f"\nAfter uploading files to TPR-DB/YAWAT, the 'WARNING 1' sentence pairs above will need to be"
                   f" re-aligned. If they are also part of a 'possible errors' warning, there are underlying issues"
                   f" and they were not processed.")
+
+        if segment_not_found:
+            print(f"\nSome segments were expected but not found (WARNING 2). That is not an issue when you expect that"
+                  f" some segments are not translated.")
 
         print(f"Finished processing {n_processed:,} .atag file(s).")
 
