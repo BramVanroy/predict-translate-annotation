@@ -25,7 +25,7 @@
         <TargetText></TargetText>
         <SourceTextUTF8></SourceTextUTF8>
         <TargetTextUTF8></TargetTextUTF8>
-        <TranslationWindow X="0" Y="0" Width="1280" Height="768" Split="640" STO="True" VHO="Vertical" />
+        <TranslationWindow X="0" Y="0" Width="1440" Height="800" Split="720" STO="True" VHO="Vertical" />
       </Settings>
       <Import2006Flag>false</Import2006Flag>
     </Standard>

@@ -2,7 +2,7 @@
    attributes. After modifying the manually edited files, it will check whether the number of characters (i.e. cursor
    positions) is the same between the new file and the original file.
    Make sure to back up your data before using this script!"""
-from collections import defaultdict
+from html import unescape
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -16,7 +16,6 @@ def _parse(fin):
 
     return tree
 
-
 def process_man_file(pfin):
     """Updates the id and cur attributes of given files to ensure that they are sequential, and write output to the
        same file.
@@ -26,10 +25,18 @@ def process_man_file(pfin):
 
     curr_cursor = 0
     curr_id = 1
+    char_diff = 0
     for word in tree.findall(".//W"):
         space_len = len(word.get("space")) if "space" in word.attrib else 0
         word.set("cur", str(curr_cursor + space_len))
         word.set("id", str(curr_id))
+        # TPR-DB unfortunately does not work with well-formed XML
+        # and it does not play nice with encoded characters...
+        # We keep track of the length of characters we encoded/modified
+        # so that we can use this later to verify the correct length
+        diff = len(word.text)
+        word.text = unescape(word.text)
+        char_diff += diff - len(word.text)
 
         # sort attributes to make sure that the order is always the same
         # does not matter if we use a real parser, but you never know...
@@ -40,8 +47,10 @@ def process_man_file(pfin):
 
     tree.write(pfin, encoding="utf-8")
 
+    return char_diff
 
-def verify_cursor(pforig, pfman):
+
+def verify_cursor(pforig, pfman, char_diff):
     """Verify that the number of characters (i.e. the final cursor position) is identical between the manually
        modified file and the original file.
     :param pforig: path to the original file
@@ -57,10 +66,12 @@ def verify_cursor(pforig, pfman):
     o_last_cursor = int(o_last_word.get("cur")) + len(o_last_word.text)
     m_last_cursor = int(m_last_word.get("cur")) + len(m_last_word.text)
 
-    if o_last_cursor != m_last_cursor:
-        print(f"Number of characters differs for {pforig.name}: {o_last_cursor} (orig), {m_last_cursor} (edited).")
+    # This report includes the character difference after unescaping special characters
+    # So the (edited) count is NOT the same as in the finale file, but final_cur+char_diff
+    if o_last_cursor != m_last_cursor + char_diff:
+        print(f"Number of characters differs for {pforig.name}: {o_last_cursor} (orig), {m_last_cursor + char_diff} (edited).")
 
-    return o_last_cursor == m_last_cursor
+    return o_last_cursor == m_last_cursor + char_diff
 
 
 def group_files(origfs, manfs):
@@ -90,8 +101,8 @@ def main(dir_orig, dir_man):
     n_processed = 0
     all_valid = True
     for f_orig, f_man in dir_groups:
-        process_man_file(f_man)
-        valid = verify_cursor(f_orig, f_man)
+        char_diff = process_man_file(f_man)
+        valid = verify_cursor(f_orig, f_man, char_diff)
         if not valid:
             all_valid = False
         n_processed += 1

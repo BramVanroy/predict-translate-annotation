@@ -18,7 +18,10 @@ def main(datap, replp):
     for fname, pfin in data_files.items():
         # Find corresponding file: the file that fname ends with, e.g.
         # fname: P01_T01.src; frepl: T01.src
-        prepl = next(pfrepl for frepl, pfrepl in repl_files.items() if fname.endswith(frepl))
+        try:
+            prepl = next(pfrepl for frepl, pfrepl in repl_files.items() if fname.endswith(frepl))
+        except StopIteration:
+            raise StopIteration(f"No replacement file found for {fname}")
 
         # remove existing file
         pfin.unlink()
